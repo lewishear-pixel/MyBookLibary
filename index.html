@@ -1,89 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#29231e">
+  <title>My Book Library</title>
 
-    <title>My Book Library</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://unpkg.com/html5-qrcode"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-
 <body>
+  <!-- ACCOUNT SCREEN -->
+<div id="accountScreen">
 
-    <aside class="sidebar">
+    <div class="account-box">
 
-        <div class="logo">
-            <span>📚</span>
-            <h1>My Library</h1>
+        <div class="account-logo">
+            📚
         </div>
 
-        <nav>
-    <button class="nav-button active" data-status="read">
-        📖 Already Read
-    </button>
+        <h1>My Book Library</h1>
 
-    <button class="nav-button" data-status="reading">
-        📕 Currently Reading
-    </button>
-
-    <button class="nav-button" data-status="want">
-        📚 Want to Read
-    </button>
-</nav>
-
-        <div class="library-stats">
-            <p>Books Read</p>
-            <strong id="bookCount">0</strong>
-        </div>
-
-    </aside>
+        <p class="account-subtitle">
+            Your books, wherever you are.
+        </p>
 
 
-    <main class="main-content">
+        <!-- LOGIN -->
 
-        <header>
+        <div id="loginForm">
 
-            <div>
-                <h2>Already Read</h2>
-                <p>Your personal bookshelf</p>
-            </div>
+            <h2>Welcome back</h2>
 
-            <button id="scanButton" class="scan-button">
-                📷 Scan Book
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Email address"
+                autocomplete="email"
+            >
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <button id="loginButton">
+                Log In
             </button>
 
-        </header>
+            <button
+                id="showSignup"
+                class="account-link"
+            >
+                Create an account
+            </button>
+
+            <button
+                id="forgotPassword"
+                class="account-link"
+            >
+                Forgot password?
+            </button>
+
+            <p id="loginMessage"></p>
+
+        </div>
 
 
-        <section class="bookshelf-container">
+        <!-- SIGN UP -->
 
-            <div id="bookGrid" class="book-grid">
+        <div id="signupForm" style="display:none;">
 
-                <div class="empty-library">
+            <h2>Create your account</h2>
 
-                    <div class="empty-icon">
-                        📚
-                    </div>
+            <input
+                type="email"
+                id="signupEmail"
+                placeholder="Email address"
+                autocomplete="email"
+            >
 
-                    <h3>Your bookshelf is empty</h3>
+            <input
+                type="password"
+                id="signupPassword"
+                placeholder="Password"
+                autocomplete="new-password"
+            >
 
-                    <p>
-                        Scan your first book to add it to your collection.
-                    </p>
+            <input
+                type="password"
+                id="signupPasswordConfirm"
+                placeholder="Confirm password"
+                autocomplete="new-password"
+            >
 
-                </div>
+            <button id="signupButton">
+                Create Account
+            </button>
 
-            </div>
+            <button
+                id="showLogin"
+                class="account-link"
+            >
+                Already have an account? Log in
+            </button>
 
-        </section>
+            <p id="signupMessage"></p>
 
-    </main>
+        </div>
 
+    </div>
 
-    <script src="script.js"></script>
+</div>
+  <div id="toast" class="toast" aria-live="polite"></div>
 
+  <aside class="sidebar">
+    <div class="logo">
+      <span>📚</span>
+      <h1>My Library</h1>
+    </div>
+
+    <nav>
+      <button class="nav-button active" data-status="read">📖 Already Read</button>
+      <button class="nav-button" data-status="reading">📕 Currently Reading</button>
+      <button class="nav-button" data-status="want">📚 Want to Read</button>
+    </nav>
+
+    <div class="library-stats">
+      <div><span>Already Read</span><strong id="readCount">0</strong></div>
+      <div><span>Reading</span><strong id="readingCount">0</strong></div>
+      <div><span>Want to Read</span><strong id="wantCount">0</strong></div>
+    </div>
+
+    <div class="account-area">
+      <div id="accountLoggedOut">
+        <button id="loginButton" class="account-button">🔐 Log in</button>
+        <button id="signupButton" class="account-button secondary">✨ Create account</button>
+      </div>
+
+      <div id="accountLoggedIn" class="hidden">
+        <div class="user-email" id="userEmail"></div>
+        <button id="logoutButton" class="account-button">Log out</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <div>
+        <h2 id="pageTitle">Already Read</h2>
+        <p id="pageSubtitle">Your finished books</p>
+      </div>
+
+      <div class="header-actions">
+        <input id="searchInput" class="search-input" type="search" placeholder="Search your books…" autocomplete="off">
+        <button id="scanButton" class="scan-button">📷 Scan Book</button>
+      </div>
+    </header>
+
+    <div id="accountBanner" class="account-banner hidden">
+      <span>☁️</span>
+      <div><strong>Log in to save your library online.</strong><small>Your books will be available on your phone and computer.</small></div>
+      <button id="bannerLoginButton">Log in</button>
+    </div>
+
+    <section class="bookshelf-container">
+      <div id="bookGrid" class="book-grid">
+        <div class="empty-library">
+          <div class="empty-icon">📚</div>
+          <h3>Your bookshelf is empty</h3>
+          <p>Scan your first book to add it to your collection.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Account modal -->
+  <div id="accountModal" class="modal hidden">
+    <div class="account-modal-box">
+      <button class="modal-close" id="closeAccountModal" aria-label="Close">×</button>
+      <div class="account-icon">📚</div>
+      <h2 id="accountModalTitle">Log in</h2>
+      <p id="accountModalSubtitle">Sign in to access your online library.</p>
+
+      <form id="accountForm">
+        <label for="accountEmail">Email</label>
+        <input id="accountEmail" type="email" required autocomplete="email" placeholder="you@example.com">
+
+        <label for="accountPassword">Password</label>
+        <input id="accountPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters">
+
+        <button class="primary-form-button" type="submit" id="accountSubmit">Log in</button>
+      </form>
+
+      <button id="switchAccountMode" class="text-button">Create an account instead</button>
+      <button id="forgotPasswordButton" class="text-button">Forgot password?</button>
+      <p id="accountMessage" class="form-message"></p>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
