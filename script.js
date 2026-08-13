@@ -204,54 +204,178 @@ function removeScannerWindow() {
 // FIND BOOK
 // =========================
 
+
 async function findBook(isbn) {
 
+    // Clean the barcode
     isbn = isbn.replace(/[\s-]/g, "");
 
-    console.log("Searching for ISBN:", isbn);
+    console.log("Scanned ISBN:", isbn);
 
     showLoading();
 
     try {
 
-        const response = await fetch(
+        let book = null;
+
+        // =====================================
+        // TRY GOOGLE BOOKS - ISBN
+        // =====================================
+
+        let response = await fetch(
             `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`
         );
 
-        if (!response.ok) {
-            throw new Error("Could not contact Google Books.");
+        if (response.ok) {
+
+            const data = await response.json();
+
+            if (data.items && data.items.length > 0) {
+                book = data.items[0].volumeInfo;
+            }
         }
 
-        const data = await response.json();
 
-        if (!data.items || data.items.length === 0) {
+        // =====================================
+        // TRY GOOGLE BOOKS - EXACT NUMBER
+        // =====================================
 
-            hideLoading();
+        if (!book) {
 
-            alert(
-                "I couldn't find this book.\n\n" +
-                "ISBN scanned: " + isbn
+            response = await fetch(
+                `https://www.googleapis.com/books/v1/volumes?q=${isbn}`
             );
+
+            if (response.ok) {
+
+                const data = await response.json();
+
+                if (data.items && data.items.length > 0) {
+                    book = data.items[0].volumeInfo;
+                }
+            }
+        }
+
+
+        // =====================================
+        // TRY OPEN LIBRARY
+        // =====================================
+
+        if (!book) {
+
+            response = await fetch(
+                `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`
+            );
+
+            if (response.ok) {
+
+                const data = await response.json();
+
+                const result = data[`ISBN:${isbn}`];
+
+                if (result) {
+
+                    book = {
+                        title: result.title || "Unknown title",
+
+                        authors: result.authors
+                            ? result.authors.map(author => author.name)
+                            : ["Unknown author"],
+
+                        description:
+                            result.notes ||
+                            "No description available.",
+
+                        imageLinks: result.cover
+                            ? {
+                                thumbnail:
+                                    result.cover.medium ||
+                                    result.cover.large
+                            }
+                            : undefined
+                    };
+                }
+            }
+        }
+
+
+        hideLoading();
+
+
+        // =====================================
+        // NOTHING FOUND
+        // =====================================
+
+        if (!book) {
+
+            showNotFound(isbn);
 
             return;
         }
 
-        const book = data.items[0].volumeInfo;
 
-        hideLoading();
+        // =====================================
+        // BOOK FOUND
+        // =====================================
 
         showBookPreview(book, isbn);
 
+
     } catch (error) {
 
-        console.error(error);
+        console.error("Book lookup error:", error);
 
         hideLoading();
 
-        alert(
-            "Something went wrong while finding the book."
-        );
+        showNotFound(isbn);
     }
+}
+function showNotFound(isbn) {
+
+    const message = document.createElement("div");
+
+    message.id = "bookNotFound";
+
+    message.innerHTML = `
+
+        <div class="not-found-box">
+
+            <div class="not-found-icon">
+                📚
+            </div>
+
+            <h2>
+                Book not found
+            </h2>
+
+            <p>
+                We scanned this ISBN:
+            </p>
+
+            <strong>
+                ${escapeHTML(isbn)}
+            </strong>
+
+            <p class="not-found-help">
+                The book isn't in the databases we checked.
+            </p>
+
+            <button id="closeNotFound">
+                Close
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(message);
+
+
+    document
+        .getElementById("closeNotFound")
+        .addEventListener(
+            "click",
+            () => message.remove()
+        );
 }
 
 
