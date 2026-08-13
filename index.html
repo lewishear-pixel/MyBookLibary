@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Book Library</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>📚</span>
+            <h1>My Library</h1>
+        </div>
+
+        <nav>
+    <button class="nav-button active" data-status="read">
+        📖 Already Read
+    </button>
+
+    <button class="nav-button" data-status="reading">
+        📕 Currently Reading
+    </button>
+
+    <button class="nav-button" data-status="want">
+        📚 Want to Read
+    </button>
+</nav>
+
+        <div class="library-stats">
+            <p>Books Read</p>
+            <strong id="bookCount">0</strong>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header>
+
+            <div>
+                <h2>Already Read</h2>
+                <p>Your personal bookshelf</p>
+            </div>
+
+            <button id="scanButton" class="scan-button">
+                📷 Scan Book
+            </button>
+
+        </header>
+
+
+        <section class="bookshelf-container">
+
+            <div id="bookGrid" class="book-grid">
+
+                <div class="empty-library">
+
+                    <div class="empty-icon">
+                        📚
+                    </div>
+
+                    <h3>Your bookshelf is empty</h3>
+
+                    <p>
+                        Scan your first book to add it to your collection.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
