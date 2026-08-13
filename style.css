@@ -146,13 +146,27 @@ header p {
 ========================= */
 
 .bookshelf-container {
-    background: #c9a47b;
-    padding: 35px 30px 50px;
-    border-radius: 15px;
+    position: relative;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(60, 35, 15, 0.18),
+            transparent 12%,
+            transparent 88%,
+            rgba(60, 35, 15, 0.18)
+        ),
+        #a8754d;
+
+    padding: 35px 30px 55px;
+
+    border-radius: 8px;
 
     box-shadow:
-        inset 0 0 30px rgba(60, 35, 15, 0.15),
-        0 10px 30px rgba(60, 35, 15, 0.15);
+        inset 0 0 35px rgba(45, 25, 10, 0.25),
+        0 15px 35px rgba(50, 30, 15, 0.2);
+
+    overflow: hidden;
 }
 
 
@@ -160,11 +174,19 @@ header p {
 
 .book-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(125px, 1fr));
+
     align-items: end;
-    gap: 35px 25px;
+
+    gap: 35px 22px;
 
     min-height: 350px;
+
+    position: relative;
+
+    padding-bottom: 30px;
 }
 
 
@@ -172,66 +194,90 @@ header p {
 
 .book {
     display: flex;
+
     justify-content: center;
+
     align-items: flex-end;
-    height: 300px;
+
+    height: 285px;
+
     position: relative;
+
+    z-index: 2;
 }
 
+
+/* Book cover */
+
 .book img {
-    width: 135px;
-    height: 210px;
+    width: 125px;
+
+    height: 195px;
 
     object-fit: cover;
 
-    border-radius: 3px 6px 6px 3px;
+    border-radius: 2px 5px 5px 2px;
 
     box-shadow:
-        5px 5px 10px rgba(0, 0, 0, 0.35);
+        4px 5px 8px rgba(0, 0, 0, 0.35),
+        inset -5px 0 5px rgba(0, 0, 0, 0.12);
 
-    transition: 0.25s;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+    transform-origin: bottom center;
 }
+
+
+/* Book hover */
 
 .book img:hover {
     transform:
-        translateY(-12px)
-        rotate(-1deg);
+        translateY(-15px)
+        rotate(-1deg)
+        scale(1.03);
 
     box-shadow:
-        8px 15px 20px rgba(0, 0, 0, 0.35);
+        8px 18px 22px rgba(0, 0, 0, 0.4);
 }
 
 
-/* Shelf underneath books */
-
-.book-grid {
-    position: relative;
-}
+/* Wooden shelf */
 
 .book-grid::after {
     content: "";
 
     position: absolute;
 
-    left: 0;
-    right: 0;
+    left: -30px;
+
+    right: -30px;
+
     bottom: 0;
 
-    height: 22px;
+    height: 28px;
 
-    background: linear-gradient(
-        to bottom,
-        #8f623d,
-        #68462d
-    );
+    background:
+        linear-gradient(
+            to bottom,
+            #9b6942 0%,
+            #80532f 45%,
+            #633e24 100%
+        );
 
-    border-radius: 3px;
+    border-radius: 2px;
 
     box-shadow:
-        0 8px 10px rgba(0, 0, 0, 0.25);
+        0 8px 12px rgba(0, 0, 0, 0.35);
 
     pointer-events: none;
+
+    z-index: 3;
 }
+
+
+/* Hide shelf when empty */
 
 .book-grid:has(.empty-library)::after {
     display: none;
@@ -649,4 +695,262 @@ header p {
 .status-button:hover {
     background: #51453b;
     transform: translateX(3px);
+}
+/* =========================
+   ACCOUNT SCREEN
+========================= */
+
+#accountScreen {
+    position: fixed;
+
+    inset: 0;
+
+    background: #29231e;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 10000;
+
+    padding: 20px;
+}
+
+.account-box {
+    width: 100%;
+
+    max-width: 420px;
+
+    background: #f8f5f0;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.4);
+}
+
+.account-logo {
+    font-size: 55px;
+
+    margin-bottom: 10px;
+}
+
+.account-box h1 {
+    color: #29231e;
+
+    margin-bottom: 8px;
+}
+
+.account-subtitle {
+    color: #786b60;
+
+    margin-bottom: 30px;
+}
+
+.account-box h2 {
+    margin-bottom: 20px;
+
+    color: #40342b;
+}
+
+.account-box input {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-bottom: 12px;
+
+    border: 1px solid #d4c8bb;
+
+    border-radius: 9px;
+
+    background: white;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+.account-box input:focus {
+    border-color: #806b58;
+}
+
+#loginButton,
+#signupButton {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #29231e;
+
+    color: white;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+#loginButton:hover,
+#signupButton:hover {
+    background: #51453b;
+}
+
+.account-link {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 14px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #806b58;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+.account-link:hover {
+    text-decoration: underline;
+}
+
+#loginMessage,
+#signupMessage {
+    margin-top: 15px;
+
+    font-size: 14px;
+}
+/* Hide elements marked as hidden */
+.hidden {
+    display: none !important;
+}
+/* =========================
+   MULTI-LEVEL BOOKSHELF
+========================= */
+
+.book-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    min-height: 0;
+    padding: 10px 5px 20px;
+}
+
+.book-shelf-row {
+    position: relative;
+    padding: 15px 10px 0;
+}
+
+.book-shelf-books {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(100px, 1fr));
+    align-items: end;
+    gap: 18px;
+    min-height: 275px;
+    position: relative;
+    z-index: 2;
+}
+
+.book-shelf-row .book {
+    height: 275px;
+}
+
+.book-shelf-row .book img {
+    width: 135px;
+    height: 210px;
+    max-width: 100%;
+}
+
+/* Wooden shelf plank */
+
+.wooden-shelf {
+    height: 24px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #b27a4d 0%,
+            #925d38 45%,
+            #684129 100%
+        );
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 7px 10px rgba(45, 25, 10, 0.35),
+        inset 0 2px 2px rgba(255, 255, 255, 0.12);
+
+    position: relative;
+    z-index: 3;
+}
+
+/* Little darker underside */
+
+.wooden-shelf::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: -7px;
+
+    height: 7px;
+
+    background: #54341f;
+
+    border-radius: 0 0 4px 4px;
+}
+
+
+/* Remove the old single shelf */
+
+.book-grid::after {
+    display: none !important;
+}
+
+
+/* =========================
+   MOBILE BOOKSHELVES
+========================= */
+
+@media (max-width: 700px) {
+
+    .book-grid {
+        gap: 25px;
+    }
+
+    .book-shelf-books {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        min-height: 220px;
+    }
+
+    .book-shelf-row .book {
+        height: 220px;
+    }
+
+    .book-shelf-row .book img {
+        width: 100px;
+        height: 155px;
+    }
+
+    .wooden-shelf {
+        height: 20px;
+    }
 }
